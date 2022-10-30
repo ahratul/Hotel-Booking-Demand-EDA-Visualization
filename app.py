@@ -1,4 +1,5 @@
 import warnings
+
 warnings.filterwarnings('ignore')
 import datetime as dt
 import numpy as np
@@ -7,6 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 import plotly.express as px
+
 # %matplotlib inline
 
 df = pd.read_csv('hotel_bookings.csv')
@@ -141,19 +143,20 @@ df['total_members'] = df['kids'] + df['adults']
 
 df['total_nights'] = df['stays_in_week_nights'] + df['stays_in_weekend_nights']
 
-
 df['arrival_date_month'] = df['arrival_date'].dt.month
 
 country_visitors = df[df['is_canceled'] == '0'].groupby(['country']).size().reset_index(name='count')
 
+f = px.choropleth(country_visitors,
+                  locations="country",
+                  color="count",
+                  hover_name="country",
+                  color_continuous_scale="dense",
+                  projection='orthographic',
+                  title="Nationality of visitors"
+                  )
 
-f=px.choropleth(country_visitors,
-              locations="country",
-              color="count",
-              hover_name="country",
-              color_continuous_scale="dense",
-              projection='orthographic',
-              title="Nationality of visitors"
-              )
-
+st.title('Hotel-Booking-Demand-EDA-Visualization')
+st.markdown(
+    'The dataset contains information on bookings for two hotels in Portugal (a resort and a city hotel) scheduled to arrive in a period between July 1, 2015 and August 31, 2017.')
 st.write(f)
